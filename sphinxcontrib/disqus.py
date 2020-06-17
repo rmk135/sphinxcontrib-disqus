@@ -86,7 +86,7 @@ class DisqusDirective(Directive):
         title_nodes = self.state.document.traverse(nodes.title)
         if not title_nodes:
             raise DisqusError('No title nodes found in document, cannot derive disqus_identifier config value.')
-        return title_nodes[0].astext()
+        return _first(title_nodes).astext()
 
     def run(self):
         """Executed by Sphinx.
@@ -130,3 +130,18 @@ def setup(app):
     app.config.html_static_path.append(os.path.relpath(STATIC_DIR, app.confdir))
     app.connect('html-page-context', event_html_page_context)
     return dict(version=__version__)
+
+
+def _first(it):
+    """Returns the first element in an iterable.
+    
+    Returns the first element found in a provided iterable no matter if it is a
+    list or generator type. If no element is found, this call will return a
+    `None` value.
+    
+    :param it: an iterable
+    
+    :returns: The first element
+    :rtype: object
+    """
+    return next(iter(it), None)
